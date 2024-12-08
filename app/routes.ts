@@ -5,8 +5,9 @@ export default [
     //     route("login", "./auth/login.tsx"),
     //     route("register", "./auth/register.tsx"),
     // ]),
+    index("routes/home.tsx"),
     layout("routes/auth/layout.tsx", [
-        index("routes/auth/Login.tsx"),
+        route("login", "routes/auth/Login.tsx"),
         route("signup", "routes/auth/Signup.tsx"),
     ])
 
