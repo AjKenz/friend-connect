@@ -5,7 +5,10 @@ export default [
     //     route("login", "./auth/login.tsx"),
     //     route("register", "./auth/register.tsx"),
     // ]),
-    index("routes/home.tsx"),
+    layout("routes/home.tsx", [
+        index("chat/EmptyRoom.tsx"),
+        route(':roomId', "chat/RightSide.tsx")
+    ]),
     layout("routes/auth/layout.tsx", [
         route("login", "routes/auth/Login.tsx"),
         route("signup", "routes/auth/Signup.tsx"),

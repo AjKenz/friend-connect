@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link, NavLink } from 'react-router'
 import type { ChatTypes } from 'types/chat'
 
 type props = {
@@ -7,8 +8,9 @@ type props = {
 
 const UserItem = ({ chat }: props) => {
     return (
-        <div
-            className="flex items-center justify-between p-4 hover:bg-gray-100 cursor-pointer border-b last:border-none"
+        <NavLink
+            to={`/${chat.id}`}
+            className={({ isActive }) => `${isActive ? "bg-gray-100" : ""} flex items-center justify-between p-4 hover:bg-gray-100 cursor-pointer border-b last:border-none`}
         >
             <div className="flex items-center">
                 <img
@@ -35,7 +37,7 @@ const UserItem = ({ chat }: props) => {
                     </span>
                 )}
             </div>
-        </div>
+        </NavLink>
     )
 }
 

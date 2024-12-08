@@ -2,6 +2,7 @@ import type { Route } from "./+types/home";
 import { Welcome } from "../welcome/welcome";
 import ChatList from "~/chat/LeftSide";
 import ChatRoom from "~/chat/RightSide";
+import { Outlet } from "react-router";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -17,7 +18,7 @@ export default function Home() {
         <ChatList />
       </div>
       <div className="col-span-6">
-        <ChatRoom />
+        <Outlet />
       </div>
     </div>
   );
