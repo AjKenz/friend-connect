@@ -1,5 +1,5 @@
 export interface ChatTypes {
-    id: number;
+    id: string;
     name: string;
     username: string;
     message: string;

@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
 import MessageItem from '~/components/chat-room/MessageItem';
 import type { MessageType as Message } from 'types/chat';
+import { useDispatch, useSelector } from 'react-redux';
+import type { RootState } from '~/redux/store';
+import { addMessage } from '~/redux/chat/chatReducer';
 
-const ChatRoom: React.FC = () => {
-    const [messages, setMessages] = useState<Message[]>([
-        { id: '1', text: 'Hi! How are you?', isSentByUser: false, timestamp: '02:45' },
-        { id: '2', text: 'I’m good, how about you?', isSentByUser: true, timestamp: '02:46' },
-    ]);
+const ChatRoom = ({ params }: { params: { roomId: string } }) => {
+    const { roomId } = params ?? {}
+
+    const dispatch = useDispatch()
+    const messages = useSelector((state: RootState) => state.chat.messages[roomId]) ?? []
+
+    // const [messages, setMessages] = useState<Message[]>([]);
 
     const [text, setText] = useState('');
 
@@ -17,10 +22,11 @@ const ChatRoom: React.FC = () => {
             id: Date.now().toString(),
             text,
             isSentByUser: true,
-            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            timestamp: new Date().toUTCString(),
         };
 
-        setMessages([...messages, newMessage]);
+        dispatch(addMessage({ chatId: roomId, message: newMessage }))
+        // setMessages([...messages, newMessage]);
         setText('');
     };
 

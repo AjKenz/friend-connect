@@ -1,67 +1,79 @@
 import React from "react";
 import type { ChatTypes } from "types/chat";
+import { useSelector } from "react-redux";
 import UserItem from "~/components/chat-list/UserItem";
+import type { RootState } from "~/redux/store";
+import { parseTime } from "utils/utilsFunctions";
 
 
 
-const chats: ChatTypes[] = [
+export const chatsData: ChatTypes[] = [
     {
-        id: 1,
+        id: "1",
         name: "Daisy Forandus",
         username: "@daisy",
         message: "Lorem Ipsum is simply dummy text.",
-        time: "08:38",
+        time: "2024-12-01T08:45:00",
         unreadCount: 23,
         avatar: "https://via.placeholder.com/150", // Replace with actual URL
     },
     {
-        id: 2,
+        id: "2",
         name: "Luther Rin",
         username: "@luther",
         message: "Lorem Ipsum is simply dummy text.",
-        time: "02 Apr",
+        time: "2024-12-02T14:30:00",
         unreadCount: 0,
         avatar: "https://via.placeholder.com/150",
     },
     {
-        id: 3,
+        id: "3",
         name: "Ram Kumar",
         username: "@ram",
         message: "Lorem Ipsum is simply dummy text.",
-        time: "08:38",
+        time: "2024-12-03T20:15:00",
         unreadCount: 0,
         avatar: "https://via.placeholder.com/150",
     },
     {
-        id: 4,
+        id: "4",
         name: "Waxy Mento",
         username: "@waxy",
         message: "Lorem Ipsum is simply dummy text.",
-        time: "08:38",
+        time: "2024-12-04T10:00:00",
         unreadCount: 16,
         avatar: "https://via.placeholder.com/150",
     },
     {
-        id: 5,
+        id: "5",
         name: "John Hatter",
         username: "@john",
         message: "Lorem Ipsum is simply dummy text.",
-        time: "08:36",
+        time: "2024-12-05T18:25:00",
         unreadCount: 0,
         avatar: "https://via.placeholder.com/150",
     },
     {
-        id: 6,
+        id: "6",
         name: "Morsy Vijay",
         username: "@morsy",
         message: "Lorem Ipsum is simply dummy text.",
-        time: "22",
+        time: "2024-12-06T22:45:00",
         unreadCount: 22,
         avatar: "",
     },
 ];
 
 const ChatList: React.FC = () => {
+    const { chatList } = useSelector((state: RootState) => state.chat)
+
+    const sortedChatsData = [...chatList].sort((a, b) => {
+        const dateA = new Date(a.time).getTime();
+        const dateB = new Date(b.time).getTime();
+        if (isNaN(dateA)) return 1; // Push invalid `a.time` to the end
+        if (isNaN(dateB)) return -1
+        return dateB - dateA;
+    });
 
 
     return (
@@ -107,7 +119,7 @@ const ChatList: React.FC = () => {
 
                 {/* Chat List */}
                 <div className="overflow-y-auto scrollbar-hide flex-1">
-                    {chats.map((chat) => (
+                    {sortedChatsData.map((chat) => (
                         <UserItem chat={chat} key={chat.id} />
                     ))}
                 </div>

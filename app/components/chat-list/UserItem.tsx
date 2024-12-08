@@ -1,6 +1,8 @@
+import moment from 'moment'
 import React from 'react'
 import { Link, NavLink } from 'react-router'
 import type { ChatTypes } from 'types/chat'
+import { formatCreatedAt } from 'utils/utilsFunctions'
 
 type props = {
     chat: ChatTypes
@@ -30,7 +32,7 @@ const UserItem = ({ chat }: props) => {
                 </div>
             </div>
             <div className="text-right">
-                <p className="text-xs text-gray-500">{chat.time}</p>
+                <p className="text-xs text-gray-500">{formatCreatedAt(chat.time)}</p>
                 {chat.unreadCount > 0 && (
                     <span className="text-xs bg-red-500 text-white px-2 py-1 rounded-full">
                         {chat.unreadCount}

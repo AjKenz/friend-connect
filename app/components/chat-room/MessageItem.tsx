@@ -1,3 +1,4 @@
+import moment from 'moment';
 import React from 'react';
 import type { MessageType } from 'types/chat';
 
@@ -9,7 +10,7 @@ const MessageItem: React.FC<MessageType> = ({ text, isSentByUser, timestamp, id 
             >
                 <p className="text-sm">{text}</p>
             </div>
-            <p className="text-xs text-gray-400 text-right mt-1">{timestamp}</p>
+            <p className="text-xs text-gray-400 text-right mt-1">{moment(timestamp).format('LT')}</p>
         </div>
     );
 };
