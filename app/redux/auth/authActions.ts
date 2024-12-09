@@ -19,6 +19,9 @@ export const signup = createAsyncThunk<SignupResponse, SignupRequest>('auth/sign
 
         const data = await response.json() as SignupResponse
 
+        console.log('signup ; ', data)
+
+
         if (data.status === 'success') {
             return data;
         } else {
@@ -26,6 +29,7 @@ export const signup = createAsyncThunk<SignupResponse, SignupRequest>('auth/sign
         }
 
     } catch (error: any) {
+        console.log('signup error ; ', error.message)
         return rejectWithValue(error instanceof Error ? error.message : 'An unknown error occurred');
     }
 }
@@ -47,12 +51,15 @@ export const login = createAsyncThunk<LoginResponse, LoginRequest>('auth/login',
 
         const data = await response.json() as LoginResponse;
 
+        console.log('login; ', data)
+
         if (data.status === 'success') {
             return data;
         } else {
             throw new Error(data?.status || "Something went wrong");
         }
     } catch (error: any) {
+        console.log('login error ; ', error.message)
         return rejectWithValue(error instanceof Error ? error.message : 'An unknown error occurred');
     }
 });

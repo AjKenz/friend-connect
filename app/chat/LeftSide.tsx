@@ -3,9 +3,9 @@ import type { ChatTypes } from "types/chat";
 import { useDispatch, useSelector } from "react-redux";
 import UserItem from "~/components/chat-list/UserItem";
 import type { AppDispatch, RootState } from "~/redux/store";
-import { parseTime } from "utils/utilsFunctions";
 import { AnimatePresence, Reorder, motion } from "motion/react";
 import { getUsers } from "~/redux/user/usersActions";
+import { toggleChatMode } from "~/redux/chat/chatReducer";
 
 
 
@@ -75,19 +75,19 @@ export const chatsData: ChatTypes[] = [
 const ChatList: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>()
 
-    const { chatList } = useSelector((state: RootState) => state.chat)
+    const { chatList, chatMode } = useSelector((state: RootState) => state.chat)
     const { user, token } = useSelector((state: RootState) => state.auth)
     const { loading, error, users } = useSelector((state: RootState) => state.users)
     const loader = useRef('unloaded')
 
 
-    const sortedChatsData = [...chatList].sort((a, b) => {
+    const sortedChatsData = chatMode ? [...chatList].sort((a, b) => {
         const dateA = new Date(a.time).getTime();
         const dateB = new Date(b.time).getTime();
         if (isNaN(dateA)) return 1; // Push inval_id `a.time` to the end
         if (isNaN(dateB)) return -1
         return dateB - dateA;
-    });
+    }) : users
 
 
     useEffect(() => {
@@ -96,7 +96,6 @@ const ChatList: React.FC = () => {
             dispatch(getUsers(token));  // Dispatch the getUsers action with the token
         }
     }, [dispatch, token]);
-
 
     return (
         <div className="h-screen flex justify-center p-4 w-full">
@@ -139,18 +138,34 @@ const ChatList: React.FC = () => {
                     />
                 </div>
 
+                <div className="flex gap-2 items-center pl-4 pb-4">
+                    <button
+                        onClick={() => dispatch(toggleChatMode(false))}
+                        className={`py-1 px-3 text-xs rounded-full bg-emerald-100 hover:bg-emerald-400 ${chatMode ? "" : "bg-emerald-400"}`}
+                    >
+                        Find Users
+                    </button>
+                    <button
+                        onClick={() => dispatch(toggleChatMode(true))}
+                        className={`py-1 px-3 text-xs rounded-full bg-emerald-100 hover:bg-emerald-400 ${chatMode ? "bg-emerald-400" : ""}`}
+                    >
+                        Chats
+                    </button>
+                </div>
+
                 {/* Chat List */}
                 <div className="overflow-y-auto scrollbar-hide flex-1">
                     {loading ?
                         <p className="">loading users...</p> :
 
                         <AnimatePresence>
-                            {users?.map((chat, index) => (
+                            {sortedChatsData?.map((chat, index) => (
                                 <motion.div
+                                    layout
                                     key={chat._id}
                                     initial={{ opacity: 0, y: -20 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: 20 }}
+                                    exit={{ opacity: 0, y: -20 }}
                                     transition={{ duration: 0.3, delay: index * 0.05 }}
                                 >
                                     <UserItem chat={chat} key={chat._id} />

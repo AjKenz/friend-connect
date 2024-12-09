@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import MessageItem from '~/components/chat-room/MessageItem';
-import type { MessageType as Message } from 'types/chat';
+import type { ChatTypes, MessageType as Message } from 'types/chat';
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from '~/redux/store';
 import { addMessage } from '~/redux/chat/chatReducer';
@@ -14,7 +14,8 @@ const ChatRoom = ({ params }: { params: { roomId: string } }) => {
     const chatList = useSelector((state: RootState) => state.chat.chatList)
     const chatIndex = chatList.findIndex(user => user._id === roomId)
     const userIndex = users.findIndex(user => user._id === roomId)
-    const { username, email, profilePicture } = chatList[chatIndex] ?? users[userIndex] ?? {}
+    const chat = chatList[chatIndex] ?? users[userIndex] ?? {}
+    const { username, email, profilePicture } = chat
     const inputRef = useRef<HTMLInputElement>(null)
 
     // const [messages, setMessages] = useState<Message[]>([]);
@@ -31,7 +32,7 @@ const ChatRoom = ({ params }: { params: { roomId: string } }) => {
             timestamp: new Date().toUTCString(),
         };
 
-        dispatch(addMessage({ chatId: roomId, message: newMessage }))
+        dispatch(addMessage({ chatId: roomId, message: newMessage, isMine: true, chatItem: chat }))
         // setMessages([...messages, newMessage]);
         setText('');
     };
