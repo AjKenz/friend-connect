@@ -123,6 +123,7 @@ const ChatList: React.FC = () => {
                     <AnimatePresence>
                         {sortedChatsData.map((chat, index) => (
                             <motion.div
+                                key={chat.id}
                                 initial={{ opacity: 0, y: -20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: 20 }}

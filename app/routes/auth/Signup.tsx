@@ -1,10 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router";
+import { signup } from "~/redux/auth/authActions";
+import { type AppDispatch, type RootState } from "~/redux/store";
+
+interface signupType {
+    photo: File | null;
+    dateOfBirth: string;
+    gender: string
+    username: string
+    email: string
+    password: string
+}
 
 const Signup: React.FC = () => {
-    const [formData, setFormData] = useState({
-        photo: "",
-        firstName: "",
-        lastName: "",
+    const dispatch = useDispatch<AppDispatch>()
+    const { loading, token, error } = useSelector((state: RootState) => state.auth)
+
+    const navigate = useNavigate()
+
+    const [signupData, setSignupData] = useState<signupType>({
+        photo: null,
+        dateOfBirth: "",
+        gender: "",
         username: "",
         email: "",
         password: "",
@@ -13,23 +31,51 @@ const Signup: React.FC = () => {
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
             const file = e.target.files[0];
-            setFormData({ ...formData, photo: URL.createObjectURL(file) });
+            setSignupData({ ...signupData, photo: file });
         }
     };
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+        setSignupData({ ...signupData, [name]: value });
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log(formData);
+        // console.log(signupData);
+
+        const { email, username, password, dateOfBirth, gender, photo } = signupData
+
+        // if (!photo) {
+        //     alert('Please select a profile picture');
+        //     return;
+        // }
+
+        // const formData = new FormData();
+        // formData.append('email', email);
+        // formData.append('username', username);
+        // formData.append('password', password);
+        // formData.append('dateOfBirth', dateOfBirth);
+        // formData.append('gender', gender);
+
+        const payload = {
+            email, username, password, dateOfBirth, gender
+        }
+        // formData.append('profilePicture', photo);
+
+        dispatch(signup(payload));
     };
+
+
+    useEffect(() => {
+        if (token) {
+            navigate("/")
+        }
+    }, [token])
 
     return (
         <div className="flex justify-center p-6 md:p-10 lg:p-16">
-            <div className="w-full max-w-3xl bg-white p-3 sm:p-8 rounded-lg shadow-lg">
+            <div className={`w-full max-w-3xl bg-white p-3 sm:p-8 rounded-lg shadow-lg ${loading ? "pointer-events-none opacity-50" : ""}`}>
                 {/* Header */}
                 <div className="mb-6">
                     <h1 className="text-2xl font-semibold text-gray-900">
@@ -46,9 +92,9 @@ const Signup: React.FC = () => {
                     {/* Profile Picture Upload */}
                     <div className="flex flex-col">
                         <div className="flex gap-2 items-center">
-                            {formData.photo ? (
+                            {signupData.photo ? (
                                 <img
-                                    src={formData.photo}
+                                    src={URL.createObjectURL(signupData.photo)}
                                     alt="Profile Preview"
                                     className="w-24 h-24 rounded-full object-cover border border-gray-200"
                                 />
@@ -76,43 +122,6 @@ const Signup: React.FC = () => {
                         </p>
                     </div>
 
-                    {/* Input Fields */}
-                    <div>
-                        <label
-                            htmlFor="firstName"
-                            className="block text-sm font-medium text-gray-700"
-                        >
-                            First Name
-                        </label>
-                        <input
-                            type="text"
-                            id="firstName"
-                            name="firstName"
-                            value={formData.firstName}
-                            onChange={handleChange}
-                            required
-                            className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                        />
-                    </div>
-
-                    <div>
-                        <label
-                            htmlFor="lastName"
-                            className="block text-sm font-medium text-gray-700"
-                        >
-                            Last Name
-                        </label>
-                        <input
-                            type="text"
-                            id="lastName"
-                            name="lastName"
-                            value={formData.lastName}
-                            onChange={handleChange}
-                            required
-                            className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                        />
-                    </div>
-
                     <div>
                         <label
                             htmlFor="username"
@@ -124,12 +133,46 @@ const Signup: React.FC = () => {
                             type="text"
                             id="username"
                             name="username"
-                            value={formData.username}
+                            value={signupData.username}
                             onChange={handleChange}
                             required
                             className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 shadow-sm focus:ring-blue-500 focus:border-blue-500"
                         />
                     </div>
+
+                    <div>
+                        <label
+                            htmlFor="dateOfBirth"
+                            className="block text-sm font-medium text-gray-700"
+                        >
+                            Date of Birth
+                        </label>
+                        <input
+                            type="date"
+                            id="dateOfBirth"
+                            name="dateOfBirth"
+                            value={signupData.dateOfBirth}
+                            onChange={handleChange}
+                            required
+                            className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                        />
+                    </div>
+
+                    <select
+                        value={signupData.gender}
+                        id="gender"
+                        name="gender"
+                        onChange={handleChange}
+                        required
+                        className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                    >
+                        <option value="" disabled>
+                            Select Gender
+                        </option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
 
                     <div>
                         <label
@@ -142,7 +185,7 @@ const Signup: React.FC = () => {
                             type="email"
                             id="email"
                             name="email"
-                            value={formData.email}
+                            value={signupData.email}
                             onChange={handleChange}
                             required
                             className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 shadow-sm focus:ring-blue-500 focus:border-blue-500"
@@ -160,19 +203,21 @@ const Signup: React.FC = () => {
                             type="password"
                             id="password"
                             name="password"
-                            value={formData.password}
+                            value={signupData.password}
                             onChange={handleChange}
                             required
                             className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 shadow-sm focus:ring-blue-500 focus:border-blue-500"
                         />
                     </div>
 
+                    {error && <p className="text-red-800 font-sans">{error}</p>}
+
                     {/* Submit Button */}
                     <button
                         type="submit"
                         className="w-full bg-blue-600 text-white py-2 rounded-md font-medium hover:bg-blue-700 focus:ring focus:ring-blue-200"
                     >
-                        Create Account
+                        {loading ? "Creating..." : 'Create Account'}
                     </button>
                 </form>
             </div>

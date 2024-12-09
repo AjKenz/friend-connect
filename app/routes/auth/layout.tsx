@@ -9,8 +9,8 @@ const layout = () => {
             <div className='flex items-center justify-between w-full'>
                 <h1 className='text-5xl text-gray-50 font-knewave'>Friends Connect</h1>
 
-                <Link to={location.pathname === '/signup' ? '/' : '/signup'}>
-                    {location.pathname === '/signup' ? 'Login instead ?' : 'signup instead?'}
+                <Link to={location.pathname === '/signup' ? '/login' : '/signup'} className='text-accent2 underline'>
+                    {location.pathname === '/signup' ? 'Login instead?' : 'signup instead?'}
                 </Link>
             </div>
             <Outlet />
