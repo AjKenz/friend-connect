@@ -9,10 +9,12 @@ const ChatRoom = ({ params }: { params: { roomId: string } }) => {
     const { roomId } = params ?? {}
 
     const dispatch = useDispatch()
+    const { users } = useSelector((state: RootState) => state.users)
     const messages = useSelector((state: RootState) => state.chat.messages[roomId]) ?? []
     const chatList = useSelector((state: RootState) => state.chat.chatList)
-    const userIndex = chatList.findIndex(user => user.id === roomId)
-    const { name, avatar, username } = chatList[userIndex]
+    const chatIndex = chatList.findIndex(user => user._id === roomId)
+    const userIndex = users.findIndex(user => user._id === roomId)
+    const { username, email, profilePicture } = chatList[chatIndex] ?? users[userIndex] ?? {}
     const inputRef = useRef<HTMLInputElement>(null)
 
     // const [messages, setMessages] = useState<Message[]>([]);
@@ -45,7 +47,7 @@ const ChatRoom = ({ params }: { params: { roomId: string } }) => {
         <div className="flex flex-col h-screen w-full bg-gray-100 p-4">
             {/* Header */}
             <div className="flex items-center justify-between bg-white p-4 shadow">
-                <h1 className="text-lg font-semibold">{name}</h1>
+                <h1 className="text-lg font-semibold">{username}</h1>
                 <div className="flex space-x-2">
                     <button className="text-blue-500">📞</button>
                     <button className="text-blue-500">📷</button>

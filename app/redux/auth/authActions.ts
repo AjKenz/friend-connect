@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import type { SignupRequest, SignupResponse, LoginRequest, LoginResponse } from 'types/auth';
+import type { SignupRequest, SignupResponse, LoginRequest, LoginResponse, GetUsersResponse } from 'types/auth';
 
 
 const apiUrl = "http://172.20.10.4:5000"

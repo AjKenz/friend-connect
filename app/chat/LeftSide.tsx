@@ -1,85 +1,106 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import type { ChatTypes } from "types/chat";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import UserItem from "~/components/chat-list/UserItem";
-import type { RootState } from "~/redux/store";
+import type { AppDispatch, RootState } from "~/redux/store";
 import { parseTime } from "utils/utilsFunctions";
 import { AnimatePresence, Reorder, motion } from "motion/react";
+import { getUsers } from "~/redux/user/usersActions";
 
 
 
 export const chatsData: ChatTypes[] = [
     {
-        id: "1",
-        name: "Daisy Forandus",
-        username: "@daisy",
+        _id: "1",
+        username: "Daisorandus",
+        email: "daisy@email.com",
         message: "Lorem Ipsum is simply dummy text.",
+        isOnline: false,
         time: "2024-12-01T08:45:00",
         unreadCount: 23,
-        avatar: "https://via.placeholder.com/150", // Replace with actual URL
+        profilePicture: "https://via.placeholder.com/150", // Replace with actual URL
     },
     {
-        id: "2",
-        name: "Luther Rin",
-        username: "@luther",
+        _id: "2",
+        username: "Luther",
+        email: "daisy@email.com",
         message: "Lorem Ipsum is simply dummy text.",
+        isOnline: false,
         time: "2024-12-02T14:30:00",
         unreadCount: 0,
-        avatar: "https://via.placeholder.com/150",
+        profilePicture: "https://via.placeholder.com/150",
     },
     {
-        id: "3",
-        name: "Ram Kumar",
-        username: "@ram",
+        _id: "3",
+        username: "@Ram",
+        email: "daisy@email.com",
         message: "Lorem Ipsum is simply dummy text.",
+        isOnline: false,
         time: "2024-12-03T20:15:00",
         unreadCount: 0,
-        avatar: "https://via.placeholder.com/150",
+        profilePicture: "https://via.placeholder.com/150",
     },
     {
-        id: "4",
-        name: "Waxy Mento",
-        username: "@waxy",
+        _id: "4",
+        username: "Waxy",
+        email: "daisy@email.com",
         message: "Lorem Ipsum is simply dummy text.",
+        isOnline: false,
         time: "2024-12-04T10:00:00",
         unreadCount: 16,
-        avatar: "https://via.placeholder.com/150",
+        profilePicture: "https://via.placeholder.com/150",
     },
     {
-        id: "5",
-        name: "John Hatter",
-        username: "@john",
+        _id: "5",
+        username: "JohnX",
+        email: "daisy@email.com",
         message: "Lorem Ipsum is simply dummy text.",
+        isOnline: false,
         time: "2024-12-05T18:25:00",
         unreadCount: 0,
-        avatar: "https://via.placeholder.com/150",
+        profilePicture: "https://via.placeholder.com/150",
     },
     {
-        id: "6",
-        name: "Morsy Vijay",
-        username: "@morsy",
+        _id: "6",
+        username: "@Morsy",
+        email: "daisy@email.com",
         message: "Lorem Ipsum is simply dummy text.",
+        isOnline: false,
         time: "2024-12-06T22:45:00",
         unreadCount: 22,
-        avatar: "",
+        profilePicture: "",
     },
 ];
 
 const ChatList: React.FC = () => {
+    const dispatch = useDispatch<AppDispatch>()
+
     const { chatList } = useSelector((state: RootState) => state.chat)
+    const { user, token } = useSelector((state: RootState) => state.auth)
+    const { loading, error, users } = useSelector((state: RootState) => state.users)
+    const loader = useRef('unloaded')
+
 
     const sortedChatsData = [...chatList].sort((a, b) => {
         const dateA = new Date(a.time).getTime();
         const dateB = new Date(b.time).getTime();
-        if (isNaN(dateA)) return 1; // Push invalid `a.time` to the end
+        if (isNaN(dateA)) return 1; // Push inval_id `a.time` to the end
         if (isNaN(dateB)) return -1
         return dateB - dateA;
     });
 
 
+    useEffect(() => {
+        if (token && loader.current === 'unloaded') {
+            loader.current = 'loaded'
+            dispatch(getUsers(token));  // Dispatch the getUsers action with the token
+        }
+    }, [dispatch, token]);
+
+
     return (
         <div className="h-screen flex justify-center p-4 w-full">
-            <div className="w-full max-w-md bg-white rounded-lg flex flex-col overflow-hidden border border-white">
+            <div className="w-full max-w-md bg-white rounded-lg flex flex-col overflow-h_idden border border-white">
                 {/* User Header */}
                 <div className="flex items-center p-4 bg-blue-100">
                     <img
@@ -88,8 +109,8 @@ const ChatList: React.FC = () => {
                         className="w-12 h-12 rounded-full object-cover"
                     />
                     <div className="ml-4">
-                        <h1 className="text-lg font-semibold text-gray-900">Ralph Hitman</h1>
-                        <p className="text-sm text-gray-500">@ralph-hitman</p>
+                        <h1 className="text-lg font-semibold text-gray-900">{user?.username}</h1>
+                        <p className="text-sm text-gray-500">{user?.email}</p>
                     </div>
                     <button className="ml-auto text-red-500 hover:text-red-600">
                         <svg
@@ -120,19 +141,23 @@ const ChatList: React.FC = () => {
 
                 {/* Chat List */}
                 <div className="overflow-y-auto scrollbar-hide flex-1">
-                    <AnimatePresence>
-                        {sortedChatsData.map((chat, index) => (
-                            <motion.div
-                                key={chat.id}
-                                initial={{ opacity: 0, y: -20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: 20 }}
-                                transition={{ duration: 0.3, delay: index * 0.05 }}
-                            >
-                                <UserItem chat={chat} key={chat.id} />
-                            </motion.div>
-                        ))}
-                    </AnimatePresence>
+                    {loading ?
+                        <p className="">loading users...</p> :
+
+                        <AnimatePresence>
+                            {users?.map((chat, index) => (
+                                <motion.div
+                                    key={chat._id}
+                                    initial={{ opacity: 0, y: -20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: 20 }}
+                                    transition={{ duration: 0.3, delay: index * 0.05 }}
+                                >
+                                    <UserItem chat={chat} key={chat._id} />
+                                </motion.div>
+                            ))}
+                        </AnimatePresence>
+                    }
                 </div>
 
             </div>

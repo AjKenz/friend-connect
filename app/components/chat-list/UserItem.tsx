@@ -1,4 +1,3 @@
-import moment from 'moment'
 import React from 'react'
 import { Link, NavLink } from 'react-router'
 import type { ChatTypes } from 'types/chat'
@@ -11,20 +10,20 @@ type props = {
 const UserItem = ({ chat }: props) => {
     return (
         <NavLink
-            to={`/${chat.id}`}
+            to={`/${chat._id}`}
             className={({ isActive }) => `${isActive ? "bg-gray-100" : ""} flex items-center justify-between p-4 hover:bg-gray-100 cursor-pointer border-b last:border-none`}
         >
             <div className="flex items-center">
                 <img
                     src={
-                        chat.avatar || "https://via.placeholder.com/150?text=Avatar"
+                        chat.profilePicture || "https://via.placeholder.com/150?text=Avatar"
                     }
-                    alt={chat.name}
+                    alt={chat.username}
                     className="w-12 h-12 rounded-full object-cover"
                 />
                 <div className="ml-4">
                     <h2 className="text-sm font-semibold text-gray-900">
-                        {chat.name}
+                        {chat.username}
                     </h2>
                     <p className="text-xs text-gray-500 truncate w-44">
                         {chat.message}

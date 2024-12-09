@@ -1,17 +1,10 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { login, signup } from './authActions';
-import type { LoginResponse } from 'types/auth';
+import type { LoginResponse, User } from 'types/auth';
 
 
 interface AuthState {
-    user: {
-        id: string | null;
-        email: string | null;
-        username: string | null;
-        dateOfBirth: string | null;
-        gender: string | null;
-        profilePicture: string | null;
-    } | null;
+    user: User | null;
     token: string | null;
     loading: boolean;
     error: string | null;

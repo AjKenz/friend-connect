@@ -1,11 +1,14 @@
+
 export interface ChatTypes {
-    id: string;
-    name: string;
+    _id: string;
     username: string;
+    email: string;
+    isOnline: boolean;
+    profilePicture?: string;
+    _v?: number;
     message: string;
     time: string;
     unreadCount: number;
-    avatar?: string; // Optional avatar image
 }
 
 export interface MessageType {

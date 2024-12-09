@@ -1,3 +1,14 @@
+import type { ChatTypes } from "./chat";
+
+export interface User {
+    id: string;
+    email: string;
+    username: string;
+    dateOfBirth: string;
+    gender: string;
+    profilePicture?: string | null;
+}
+
 export interface SignupRequest {
     email: string;
     username: string;
@@ -11,14 +22,7 @@ export interface SignupResponse {
     status: string;
     token: string;
     data: {
-        user: {
-            id: string;
-            email: string;
-            username: string;
-            dateOfBirth: string;
-            gender: string;
-            profilePicture: string;
-        };
+        user: User
     };
 }
 
@@ -32,13 +36,13 @@ export interface LoginResponse {
     status: string;
     token: string;
     data: {
-        user: {
-            id: string | null;
-            email: string | null;
-            username: string | null;
-            dateOfBirth: string | null;
-            gender: string | null;
-            profilePicture: string | null;
-        }
+        user: User
     };
+}
+
+export interface GetUsersResponse {
+    status: string;
+    data: {
+        users: ChatTypes[];
+    }
 }
