@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import MessageItem from '~/components/chat-room/MessageItem';
 import type { MessageType as Message } from 'types/chat';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,6 +10,10 @@ const ChatRoom = ({ params }: { params: { roomId: string } }) => {
 
     const dispatch = useDispatch()
     const messages = useSelector((state: RootState) => state.chat.messages[roomId]) ?? []
+    const chatList = useSelector((state: RootState) => state.chat.chatList)
+    const userIndex = chatList.findIndex(user => user.id === roomId)
+    const { name, avatar, username } = chatList[userIndex]
+    const inputRef = useRef<HTMLInputElement>(null)
 
     // const [messages, setMessages] = useState<Message[]>([]);
 
@@ -30,11 +34,18 @@ const ChatRoom = ({ params }: { params: { roomId: string } }) => {
         setText('');
     };
 
+    useEffect(() => {
+        if (inputRef.current) {
+            inputRef.current.focus()
+        }
+    }, [roomId])
+
+
     return (
         <div className="flex flex-col h-screen w-full bg-gray-100 p-4">
             {/* Header */}
             <div className="flex items-center justify-between bg-white p-4 shadow">
-                <h1 className="text-lg font-semibold">Ram Kumar</h1>
+                <h1 className="text-lg font-semibold">{name}</h1>
                 <div className="flex space-x-2">
                     <button className="text-blue-500">📞</button>
                     <button className="text-blue-500">📷</button>
@@ -42,7 +53,7 @@ const ChatRoom = ({ params }: { params: { roomId: string } }) => {
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto my-4 space-y-2 scrollbar-hide">
+            <div className="flex-1 flex flex-col justify-end overflow-y-auto my-4 space-y-2 scrollbar-hide">
                 {messages.map((message) => (
                     <MessageItem
                         id={message.id}
@@ -57,10 +68,19 @@ const ChatRoom = ({ params }: { params: { roomId: string } }) => {
             {/* Input Field */}
             <div className="flex items-center space-x-2 bg-white p-4 shadow">
                 <input
+                    ref={inputRef}
                     type="text"
                     placeholder="Type a message..."
+                    autoFocus
                     value={text}
                     onChange={(e) => setText(e.target.value)}
+                    onKeyDown={(e) => {
+                        // Check if the key pressed is Enter (keyCode 13)
+                        if (e.key === "Enter") {
+                            e.preventDefault();
+                            handleSendMessage();
+                        }
+                    }}
                     className="flex-1 border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <button
@@ -70,6 +90,7 @@ const ChatRoom = ({ params }: { params: { roomId: string } }) => {
                     Send
                 </button>
             </div>
+
         </div>
     );
 };

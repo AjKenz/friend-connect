@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import UserItem from "~/components/chat-list/UserItem";
 import type { RootState } from "~/redux/store";
 import { parseTime } from "utils/utilsFunctions";
+import { AnimatePresence, Reorder, motion } from "motion/react";
 
 
 
@@ -119,10 +120,20 @@ const ChatList: React.FC = () => {
 
                 {/* Chat List */}
                 <div className="overflow-y-auto scrollbar-hide flex-1">
-                    {sortedChatsData.map((chat) => (
-                        <UserItem chat={chat} key={chat.id} />
-                    ))}
+                    <AnimatePresence>
+                        {sortedChatsData.map((chat, index) => (
+                            <motion.div
+                                initial={{ opacity: 0, y: -20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: 20 }}
+                                transition={{ duration: 0.3, delay: index * 0.05 }}
+                            >
+                                <UserItem chat={chat} key={chat.id} />
+                            </motion.div>
+                        ))}
+                    </AnimatePresence>
                 </div>
+
             </div>
         </div>
     );
