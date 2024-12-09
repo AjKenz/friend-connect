@@ -19,7 +19,7 @@ export const signup = createAsyncThunk<SignupResponse, SignupRequest>('auth/sign
 
         const data = await response.json() as SignupResponse
 
-        console.log('signup ; ', data)
+        // console.log('signup ; ', data)
 
 
         if (data.status === 'success') {
@@ -51,7 +51,7 @@ export const login = createAsyncThunk<LoginResponse, LoginRequest>('auth/login',
 
         const data = await response.json() as LoginResponse;
 
-        console.log('login; ', data)
+        // console.log('login; ', data)
 
         if (data.status === 'success') {
             return data;

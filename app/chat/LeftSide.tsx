@@ -97,13 +97,16 @@ const ChatList: React.FC = () => {
         }
     }, [dispatch, token]);
 
+
+    // console.log('user; ', user)
+
     return (
         <div className="h-screen flex justify-center p-4 w-full">
             <div className="w-full max-w-md bg-white rounded-lg flex flex-col overflow-h_idden border border-white">
                 {/* User Header */}
                 <div className="flex items-center p-4 bg-blue-100">
                     <img
-                        src="https://via.placeholder.com/50"
+                        src={user?.profilePicture || "https://via.placeholder.com/50"}
                         alt="User Avatar"
                         className="w-12 h-12 rounded-full object-cover"
                     />
